@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#09050f">
+  <title>SRCYY.IOSCPM — Official Hub</title>
+  <meta name="description" content="Official SRCYY.IOSCPM hub — TikTok, Telegram, giveaways, community and more.">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(circle at 50% -10%, rgba(150, 60, 255, 0.22), transparent 35%),
+        linear-gradient(180deg, #09050f 0%, #0d0715 50%, #08050d 100%);
+      color: #fff;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .container {
+      width: min(1080px, calc(100% - 32px));
+      margin: auto;
+    }
+    /* NAV */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(18px);
+      background: rgba(9, 5, 15, 0.72);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .nav-inner {
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-weight: 900;
+      letter-spacing: 1px;
+      font-size: 18px;
+    }
+    .logo span {
+      color: #a855f7;
+    }
+    .nav-button {
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(168, 85, 247, 0.12);
+      border: 1px solid rgba(168, 85, 247, 0.35);
+      color: #d8b4fe;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    /* HERO */
+    .hero {
+      text-align: center;
+      padding: 95px 0 75px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 13px;
+      border-radius: 999px;
+      background: rgba(168, 85, 247, 0.10);
+      border: 1px solid rgba(168, 85, 247, 0.25);
+      color: #d8b4fe;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #a855f7;
+      box-shadow: 0 0 12px #a855f7;
+    }
+    h1 {
+      font-size: clamp(42px, 11vw, 82px);
+      line-height: 0.95;
+      letter-spacing: -3px;
+      font-weight: 950;
+      margin-bottom: 22px;
+    }
+    h1 span {
+      background: linear-gradient(90deg, #c084fc, #a855f7, #e879f9);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .hero p {
+      max-width: 620px;
+      margin: auto;
+      color: #aaa2b5;
+      font-size: 16px;
+      line-height: 1.7;
+    }
+    .hero-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 32px;
+    }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 155px;
+      padding: 14px 20px;
+      border-radius: 13px;
+      font-weight: 800;
+      font-size: 14px;
+      transition: 0.2s ease;
+    }
+    .button:hover {
+      transform: translateY(-3px);
+    }
+    .primary {
+      background: linear-gradient(135deg, #9333ea, #c026d3);
+      box-shadow: 0 10px 35px rgba(147, 51, 234, 0.28);
+    }
+    .secondary {
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.09);
+    }
+    /* SECTIONS */
+    section {
+      padding: 35px 0;
+    }
+    .section-title {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .section-title h2 {
+      font-size: 28px;
+      letter-spacing: -0.7px;
+      margin-bottom: 8px;
+    }
+    .section-title p {
+      color: #918a99;
+      font-size: 14px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    .card {
+      position: relative;
+      padding: 26px;
+      border-radius: 22px;
+      background: linear-gradient(
+        145deg,
+        rgba(255,255,255,0.055),
+        rgba(255,255,255,0.018)
+      );
+      border: 1px solid rgba(255,255,255,0.075);
+      overflow: hidden;
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      width: 160px;
+      height: 160px;
+      right: -80px;
+      top: -80px;
+      background: rgba(168, 85, 247, 0.13);
+      filter: blur(25px);
+      border-radius: 50%;
+    }
+    .icon {
+      width: 46px;
+      height: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 14px;
+      background: rgba(168, 85, 247, 0.12);
+      border: 1px solid rgba(168, 85, 247, 0.22);
+      font-size: 22px;
+      margin-bottom: 18px;
+    }
+    .card h3 {
+      font-size: 19px;
+      margin-bottom: 9px;
+    }
+    .card p {
+      color: #918a99;
+      font-size: 14px;
+      line-height: 1.65;
+      margin-bottom: 20px;
+    }
+    .card-link {
+      color: #c084fc;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    /* SHOP */
+    .shop {
+      text-align: center;
+      padding: 55px 25px;
+      margin-top: 20px;
+      border-radius: 26px;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(168,85,247,0.16), transparent 55%),
+        rgba(255,255,255,0.025);
+      border: 1px solid rgba(168,85,247,0.14);
+    }
+    .shop h2 {
+      font-size: 31px;
+      margin-bottom: 10px;
+    }
+    .shop p {
+      color: #948c9e;
+      max-width: 500px;
+      margin: auto;
+      line-height: 1.7;
+      font-size: 14px;
+    }
+    .coming {
+      display: inline-block;
+      margin-top: 22px;
+      padding: 11px 18px;
+      border-radius: 999px;
+      background: rgba(168,85,247,0.10);
+      border: 1px solid rgba(168,85,247,0.25);
+      color: #c084fc;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 60px 0 35px;
+      color: #625b69;
+      font-size: 12px;
+    }
+    footer strong {
+      color: #9c91a6;
+    }
+    /* MOBILE */
+    @media (max-width: 650px) {
+      .hero {
+        padding: 75px 0 55px;
+      }
+      h1 {
+        letter-spacing: -2px;
+      }
+      .hero p {
+        font-size: 15px;
+      }
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      .button {
+        width: 100%;
+      }
+      .hero-buttons {
+        flex-direction: column;
+      }
+      .nav-button {
+        padding: 9px 13px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="container nav-inner">
+      <div class="logo">SRCYY<span>.IOSCPM</span></div>
+  <a
+    class="nav-button"
+    href="https://www.tiktok.com/@srcyy.ioscpm?_r=1&_t=ZT-98njSuUTKsn"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Follow TikTok
+  </a>
+</div>
+  </nav>
+  <main>
+<section class="hero">
+  <div class="container">
+    <div class="badge">
+      <span class="dot"></span>
+      OFFICIAL SRCYY HUB
+    </div>
+    <h1>
+      <span>SRCYY.IOSCPM</span>
+    </h1>
+    <p>
+      Welcome to the official SRCYY hub.
+      Follow the content, join the community,
+      grab free account giveaways and stay updated
+      on everything SRCYY.
+    </p>
+    <div class="hero-buttons">
+      <a
+        class="button primary"
+        href="https://www.tiktok.com/@srcyy.ioscpm?_r=1&_t=ZT-98njSuUTKsn"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        🎥 TikTok
+      </a>
+      <a
+        class="button secondary"
+        href="https://t.me/+ofFJ6Yiqw8A3Mzcx"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        📢 Telegram
+      </a>
+    </div>
+  </div>
+</section>
+<section>
+  <div class="container">
+    <div class="section-title">
+      <h2>Everything SRCYY</h2>
+      <p>One place for the community, content and giveaways.</p>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <div class="icon">🎁</div>
+        <h3>Free Account Giveaways</h3>
+        <p>
+          Get access to the SRCYY giveaway system
+          and claim free accounts when stock is available.
+        </p>
+        <a
+          class="card-link"
+          href="https://t.me/SrcyyGiveAway_bot"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Open Giveaway Bot →
+        </a>
+      </div>
+      <div class="card">
+        <div class="icon">🎥</div>
+        <h3>TikTok</h3>
+        <p>
+          Follow SRCYY for CPM content, updates,
+          giveaways and new drops.
+        </p>
+        <a
+          class="card-link"
+          href="https://www.tiktok.com/@srcyy.ioscpm?_r=1&_t=ZT-98njSuUTKsn"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Visit TikTok →
+        </a>
+      </div>
+      <div class="card">
+        <div class="icon">📸</div>
+        <h3>Instagram</h3>
+        <p>
+          Follow the official Instagram for more
+          SRCYY content and updates.
+        </p>
+        <a
+          class="card-link"
+          href="https://www.instagram.com/srcyy.ios?igsh=NTc4MTIwNjQ2YQ%3D%3D&utm_source=qr"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Visit Instagram →
+        </a>
+      </div>
+      <div class="card">
+        <div class="icon">📢</div>
+        <h3>Telegram Community</h3>
+        <p>
+          Join the official Telegram community
+          and stay updated on new releases and announcements.
+        </p>
+        <a
+          class="card-link"
+          href="https://t.me/+ofFJ6Yiqw8A3Mzcx"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Join Telegram →
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+<section>
+  <div class="container">
+    <div class="shop">
+      <h2>💎 SRCYY SHOP</h2>
+      <p>
+        MAX accounts, designed accounts and more.
+        The official SRCYY shop is currently being prepared.
+      </p>
+      <div class="coming">
+        SHOP COMING SOON
+      </div>
+    </div>
+  </div>
+</section>
+  </main>
+  <footer>
+    <div class="container">
+      © 2026 <strong>SRCYY.IOSCPM</strong> — Official Hub
+    </div>
+  </footer>
+</body>
+</html>
