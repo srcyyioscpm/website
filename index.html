@@ -17,7 +17,7 @@
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-  body { background-color: var(--bg-color); color: var(--text-main); padding: 20px; max-width: 800px; margin: 0 auto; }
+  body { background-color: var(--bg-color); color: var(--text-main); padding: 20px; max-width: 850px; margin: 0 auto; }
   
   .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
   .header h1 { font-size: 20px; font-weight: 700; }
@@ -31,6 +31,7 @@
   button { background: var(--accent); border: none; font-weight: 600; cursor: pointer; }
   button:active { opacity: 0.8; }
   .btn-danger { background: var(--danger); padding: 6px 10px; font-size: 11px; }
+  .btn-warning { background: var(--warning); color: #000; padding: 6px 10px; font-size: 11px; font-weight: 700; }
 
   table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; text-align: left; }
   th { color: var(--text-sub); padding: 10px; border-bottom: 1px solid var(--card-border); font-weight: 600; }
@@ -40,7 +41,7 @@
   .badge-unused { background: rgba(234, 179, 8, 0.15); color: var(--warning); border: 1px solid rgba(234, 179, 8, 0.3); }
   .badge-used { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
 
-  pre { background: #0b0e14; padding: 14px; border-radius: 8px; font-size: 11px; color: #a7f3d0; overflow-x: auto; font-family: monospace; }
+  .actions-cell { display: flex; gap: 6px; }
 </style>
 </head>
 <body>
@@ -82,9 +83,8 @@
 </div>
 
 <script>
-  const AUTH_API_URL = "https://mute-water-fd47.bookingotbfern.workers.dev/";
+  const AUTH_API_URL = "https://mute-water-fd47.kingotbfern.workers.dev/";
 
-  // Fetch all keys from Cloudflare KV database
   async function loadKeysFromCloudflare() {
     try {
       const res = await fetch(`${AUTH_API_URL}?api=list`);
@@ -95,7 +95,6 @@
     }
   }
 
-  // Render keys into table
   function renderKeyTable(keys) {
     const tbody = document.getElementById("keyTableBody");
     tbody.innerHTML = "";
@@ -111,20 +110,22 @@
         ? `<span class="badge badge-used">Used</span>` 
         : `<span class="badge badge-unused">Unused</span>`;
       
-      const hwidDisplay = k.hwid ? k.hwid.substring(0, 16) + "..." : "None";
+      const hwidDisplay = k.hwid ? k.hwid.substring(0, 14) + "..." : "None";
 
       tr.innerHTML = `
         <td style="font-family: monospace; font-weight:600;">${k.key}</td>
         <td>${k.days} Days</td>
         <td>${statusBadge}</td>
         <td style="font-family: monospace; color: var(--text-sub);">${hwidDisplay}</td>
-        <td><button class="btn-danger" onclick="deleteKeyCloudflare('${k.key}')">Delete</button></td>
+        <td class="actions-cell">
+          <button class="btn-warning" onclick="resetHwidCloudflare('${k.key}')">Reset HWID</button>
+          <button class="btn-danger" onclick="deleteKeyCloudflare('${k.key}')">Delete</button>
+        </td>
       `;
       tbody.appendChild(tr);
     });
   }
 
-  // Generate a new key and push to Cloudflare KV
   async function handleGenerateKey() {
     const prefix = document.getElementById("customPrefix").value.trim() || "SRCYY";
     const days = document.getElementById("keyDuration").value;
@@ -136,14 +137,18 @@
     loadKeysFromCloudflare();
   }
 
-  // Delete key from Cloudflare KV
+  async function resetHwidCloudflare(key) {
+    if (!confirm(`Reset HWID for key ${key}?`)) return;
+    await fetch(`${AUTH_API_URL}?api=resethwid&key=${encodeURIComponent(key)}`);
+    loadKeysFromCloudflare();
+  }
+
   async function deleteKeyCloudflare(key) {
     if (!confirm(`Delete key ${key}?`)) return;
     await fetch(`${AUTH_API_URL}?api=delete&key=${encodeURIComponent(key)}`);
     loadKeysFromCloudflare();
   }
 
-  // Initial load
   loadKeysFromCloudflare();
 </script>
 
