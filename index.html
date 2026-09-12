@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Srcyyz CPM Server Dashboard</title>
+<title>Srcyyz Server Dashboard</title>
 <style>
   :root {
     --bg-color: #0b0e14;
@@ -27,7 +27,7 @@
   .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
   .card-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-sub); margin-bottom: 16px; }
 
-  .form-group { display: flex; gap: 10px; flex-wrap: wrap; }
+  .form-group { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
   select, input, button { background: #0b0e14; border: 1px solid var(--card-border); border-radius: 8px; color: #fff; padding: 10px 14px; font-size: 13px; outline: none; }
   button { background: var(--accent); border: none; font-weight: 600; cursor: pointer; }
   button:active { opacity: 0.8; }
@@ -65,10 +65,10 @@
 <div class="card">
   <div class="card-title">Generate License Keys</div>
   <div class="form-group">
-    <select id="keyDuration">
-      <option value="30">30 Days</option>
-      <option value="7">7 Days</option>
-      <option value="1">1 Day</option>
+    <input type="number" id="customTimeVal" placeholder="Duration" value="30" style="width: 90px;" min="1">
+    <select id="customTimeUnit">
+      <option value="days">Days</option>
+      <option value="hours">Hours</option>
     </select>
     <input type="text" id="customPrefix" placeholder="Custom Prefix (Optional)" value="SRCYY">
     <button onclick="handleGenerateKey()">Generate Key</button>
@@ -151,10 +151,12 @@
       
       const hwidDisplay = k.hwid ? k.hwid.substring(0, 14) + "..." : "None";
       const pauseBtnText = k.paused ? "Unpause" : "Pause";
+      
+      const durationDisplay = k.durationDisplay || `${k.days} Days`;
 
       tr.innerHTML = `
         <td style="font-family: monospace; font-weight:600;">${k.key}</td>
-        <td>${k.days} Days</td>
+        <td>${durationDisplay}</td>
         <td>${statusBadge}</td>
         <td style="font-family: monospace; color: var(--text-sub);">${hwidDisplay}</td>
         <td class="actions-cell">
@@ -170,12 +172,17 @@
   async function handleGenerateKey() {
     const pass = getAdminPass();
     const prefix = document.getElementById("customPrefix").value.trim() || "SRCYY";
-    const days = document.getElementById("keyDuration").value;
+    const timeVal = parseFloat(document.getElementById("customTimeVal").value) || 1;
+    const timeUnit = document.getElementById("customTimeUnit").value;
     
+    // Calculate fractional days for Cloudflare KV storage
+    const days = timeUnit === "hours" ? (timeVal / 24) : timeVal;
+    const durationLabel = `${timeVal} ${timeUnit.charAt(0).toUpperCase() + timeUnit.slice(1)}`;
+
     const randomPart = Array.from({length: 3}, () => Math.random().toString(36).substring(2, 6).toUpperCase()).join('-');
     const newKey = `${prefix}-${randomPart}`;
     
-    await fetch(`${AUTH_API_URL}?api=add&key=${newKey}&days=${days}&admin_key=${encodeURIComponent(pass)}`);
+    await fetch(`${AUTH_API_URL}?api=add&key=${newKey}&days=${days}&label=${encodeURIComponent(durationLabel)}&admin_key=${encodeURIComponent(pass)}`);
     loadKeysFromCloudflare();
   }
 
