@@ -108,12 +108,14 @@
 </div>
 
 <script>
-    // Embedded API endpoint listener with CORS support
+      // Embedded API endpoint listener with JSONP + CORS support
   (function handleApi() {
     const params = new URLSearchParams(window.location.search);
     if (params.get('api') === 'validate') {
       const key = params.get('key');
       const hwid = params.get('hwid') || 'UNKNOWN';
+      const callback = params.get('callback');
+      
       let keys = JSON.parse(localStorage.getItem('auth_keys') || '[]');
       let keyObj = keys.find(k => k.key === key);
 
@@ -137,13 +139,18 @@
         }
       }
 
-      // Output plain JSON for webview fetch compatibility
+      // Output JSONP wrapper if callback parameter exists
       document.open();
-      document.write(JSON.stringify(response));
+      if (callback) {
+        document.write(`${callback}(${JSON.stringify(response)});`);
+      } else {
+        document.write(JSON.stringify(response));
+      }
       document.close();
       throw new Error("API Execution Complete");
     }
   })();
+
 
 
   // Dashboard Management Logic
