@@ -108,7 +108,7 @@
 </div>
 
 <script>
-  // Setup embedded API endpoint listener
+    // Embedded API endpoint listener with CORS support
   (function handleApi() {
     const params = new URLSearchParams(window.location.search);
     if (params.get('api') === 'validate') {
@@ -126,7 +126,6 @@
         } else if (keyObj.expiresAt && now > keyObj.expiresAt) {
           response = { valid: false, message: "Key expired" };
         } else {
-          // Activate key if first use
           if (!keyObj.used) {
             keyObj.used = true;
             keyObj.hwid = hwid;
@@ -138,10 +137,14 @@
         }
       }
 
-      document.body.innerHTML = `<pre>${JSON.stringify(response)}</pre>`;
-      throw new Error("API call finished."); // Halt UI rendering for API response
+      // Output plain JSON for webview fetch compatibility
+      document.open();
+      document.write(JSON.stringify(response));
+      document.close();
+      throw new Error("API Execution Complete");
     }
   })();
+
 
   // Dashboard Management Logic
   function getKeys() {
