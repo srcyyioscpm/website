@@ -55,6 +55,14 @@
 </div>
 
 <div class="card">
+  <div class="card-title">Admin Authentication</div>
+  <div class="form-group">
+    <input type="password" id="adminPassInput" placeholder="Enter Admin Secret Key" style="flex:1;">
+    <button onclick="saveAdminPass()">Save Password</button>
+  </div>
+</div>
+
+<div class="card">
   <div class="card-title">Generate License Keys</div>
   <div class="form-group">
     <select id="keyDuration">
@@ -88,11 +96,34 @@
 <script>
   const AUTH_API_URL = "https://mute-water-fd47.bookingotbfern.workers.dev/";
 
+  function getAdminPass() {
+    return localStorage.getItem("cpm_admin_pass") || "";
+  }
+
+  function saveAdminPass() {
+    const val = document.getElementById("adminPassInput").value.trim();
+    localStorage.setItem("cpm_admin_pass", val);
+    alert("Admin password saved!");
+    loadKeysFromCloudflare();
+  }
+
+  window.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("adminPassInput").value = getAdminPass();
+    loadKeysFromCloudflare();
+  });
+
   async function loadKeysFromCloudflare() {
+    const pass = getAdminPass();
     try {
-      const res = await fetch(`${AUTH_API_URL}?api=list`);
-      const keys = await res.json();
-      renderKeyTable(keys);
+      const res = await fetch(`${AUTH_API_URL}?api=list&admin_key=${encodeURIComponent(pass)}`);
+      const data = await res.json();
+      
+      if (data.error === "Unauthorized") {
+        document.getElementById("keyTableBody").innerHTML = `<tr><td colspan="5" style="text-align:center; color: var(--danger);">Unauthorized. Enter valid admin password.</td></tr>`;
+        return;
+      }
+
+      renderKeyTable(data);
     } catch (e) {
       console.error("Error loading keys:", e);
     }
@@ -137,34 +168,36 @@
   }
 
   async function handleGenerateKey() {
+    const pass = getAdminPass();
     const prefix = document.getElementById("customPrefix").value.trim() || "SRCYY";
     const days = document.getElementById("keyDuration").value;
     
     const randomPart = Array.from({length: 3}, () => Math.random().toString(36).substring(2, 6).toUpperCase()).join('-');
     const newKey = `${prefix}-${randomPart}`;
     
-    await fetch(`${AUTH_API_URL}?api=add&key=${newKey}&days=${days}`);
+    await fetch(`${AUTH_API_URL}?api=add&key=${newKey}&days=${days}&admin_key=${encodeURIComponent(pass)}`);
     loadKeysFromCloudflare();
   }
 
   async function togglePauseCloudflare(key) {
-    await fetch(`${AUTH_API_URL}?api=togglepause&key=${encodeURIComponent(key)}`);
+    const pass = getAdminPass();
+    await fetch(`${AUTH_API_URL}?api=togglepause&key=${encodeURIComponent(key)}&admin_key=${encodeURIComponent(pass)}`);
     loadKeysFromCloudflare();
   }
 
   async function resetHwidCloudflare(key) {
     if (!confirm(`Reset HWID for key ${key}?`)) return;
-    await fetch(`${AUTH_API_URL}?api=resethwid&key=${encodeURIComponent(key)}`);
+    const pass = getAdminPass();
+    await fetch(`${AUTH_API_URL}?api=resethwid&key=${encodeURIComponent(key)}&admin_key=${encodeURIComponent(pass)}`);
     loadKeysFromCloudflare();
   }
 
   async function deleteKeyCloudflare(key) {
     if (!confirm(`Delete key ${key}?`)) return;
-    await fetch(`${AUTH_API_URL}?api=delete&key=${encodeURIComponent(key)}`);
+    const pass = getAdminPass();
+    await fetch(`${AUTH_API_URL}?api=delete&key=${encodeURIComponent(key)}&admin_key=${encodeURIComponent(pass)}`);
     loadKeysFromCloudflare();
   }
-
-  loadKeysFromCloudflare();
 </script>
 
 </body>
