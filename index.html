@@ -1,232 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Auth Admin Dashboard</title>
-  <style>
-    :root {
-      --bg: #0f172a;
-      --card-bg: rgba(30, 41, 59, 0.7);
-      --border: rgba(255, 255, 255, 0.1);
-      --accent: #3b82f6;
-      --accent-hover: #2563eb;
-      --danger: #ef4444;
-      --text: #f8fafc;
-      --subtext: #94a3b8;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auth Server Dashboard</title>
+<style>
+  :root {
+    --bg-color: #0b0e14;
+    --card-bg: #151a23;
+    --card-border: #232a36;
+    --accent: #3b82f6;
+    --text-main: #f3f4f6;
+    --text-sub: #9ca3af;
+    --danger: #ef4444;
+    --warning: #eab308;
+  }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background: var(--bg); color: var(--text); padding: 20px; display: flex; justify-content: center; }
-    .container { width: 100%; max-width: 900px; display: flex; flex-direction: column; gap: 20px; }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  body { background-color: var(--bg-color); color: var(--text-main); padding: 20px; max-width: 800px; margin: 0 auto; }
+  
+  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+  .header h1 { font-size: 20px; font-weight: 700; }
+  .status { font-size: 12px; color: #10b981; }
 
-    header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
-    h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; }
-    
-    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; backdrop-filter: blur(10px); }
-    .card-title { font-size: 14px; font-weight: 600; color: var(--subtext); margin-bottom: 12px; text-transform: uppercase; }
+  .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+  .card-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-sub); margin-bottom: 16px; }
 
-    .form-group { display: flex; gap: 10px; flex-wrap: wrap; }
-    select, input, button {
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 10px 14px;
-      border-radius: 8px;
-      font-size: 14px;
-      outline: none;
-    }
-    
-    button { background: var(--accent); border: none; font-weight: 600; cursor: pointer; transition: 0.2s; }
-    button:hover { background: var(--accent-hover); }
-    button.danger { background: var(--danger); }
+  .form-group { display: flex; gap: 10px; flex-wrap: wrap; }
+  select, input, button { background: #0b0e14; border: 1px solid var(--card-border); border-radius: 8px; color: #fff; padding: 10px 14px; font-size: 13px; outline: none; }
+  button { background: var(--accent); border: none; font-weight: 600; cursor: pointer; }
+  button:active { opacity: 0.8; }
+  .btn-danger { background: var(--danger); padding: 6px 10px; font-size: 11px; }
 
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; text-align: left; font-size: 13px; }
-    th { color: var(--subtext); padding: 10px; border-bottom: 1px solid var(--border); }
-    td { padding: 12px 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
-    .badge { padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; }
-    .badge-active { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
-    .badge-unused { background: rgba(234, 179, 8, 0.2); color: #fde047; }
-    .badge-expired { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+  table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; text-align: left; }
+  th { color: var(--text-sub); padding: 10px; border-bottom: 1px solid var(--card-border); font-weight: 600; }
+  td { padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); }
 
-    .api-box { background: rgba(0,0,0,0.3); padding: 10px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #a5f3fc; overflow-x: auto; }
-  </style>
+  .badge { padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; display: inline-block; }
+  .badge-unused { background: rgba(234, 179, 8, 0.15); color: var(--warning); border: 1px solid rgba(234, 179, 8, 0.3); }
+  .badge-used { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+  pre { background: #0b0e14; padding: 14px; border-radius: 8px; font-size: 11px; color: #a7f3d0; overflow-x: auto; font-family: monospace; }
+</style>
 </head>
 <body>
 
-<div class="container">
-  <header>
-    <h1>Auth Server Dashboard</h1>
-    <span style="font-size: 12px; color: var(--subtext);">Status: Running</span>
-  </header>
+<div class="header">
+  <h1>Auth Server Dashboard</h1>
+  <div class="status">● Cloudflare Backend Online</div>
+</div>
 
-  <!-- Key Generator Card -->
-  <div class="card">
-    <div class="card-title">Generate License Keys</div>
-    <div class="form-group">
-      <select id="duration">
-        <option value="1">1 Day</option>
-        <option value="7">7 Days</option>
-        <option value="30" selected>30 Days</option>
-        <option value="365">1 Year</option>
-        <option value="99999">Lifetime</option>
-      </select>
-      <input type="text" id="prefix" placeholder="Custom Prefix (Optional)" style="width: 180px;">
-      <button onclick="generateKey()">Generate Key</button>
-    </div>
-  </div>
-
-  <!-- Key Table Card -->
-  <div class="card">
-    <div class="card-title">License Keys Database</div>
-    <table>
-      <thead>
-        <tr>
-          <th>Key</th>
-          <th>Duration</th>
-          <th>Status</th>
-          <th>HWID / Device</th>
-          <th>Expires</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="keyTable"></tbody>
-    </table>
-  </div>
-
-  <!-- API Integration Reference -->
-  <div class="card">
-    <div class="card-title">Client API Integration Script (Python / JS / Lua)</div>
-    <div class="api-box">
-      // Call this logic in your app script to validate keys:<br>
-      const key = "YOUR_USER_KEY";<br>
-      const response = await fetch(`auth.html?api=validate&key=${key}&hwid=DEVICE_ID`);<br>
-      const result = await response.json();<br>
-      if (result.valid) { /* Grant Access */ }
-    </div>
+<div class="card">
+  <div class="card-title">Generate License Keys</div>
+  <div class="form-group">
+    <select id="keyDuration">
+      <option value="30">30 Days</option>
+      <option value="7">7 Days</option>
+      <option value="1">1 Day</option>
+    </select>
+    <input type="text" id="customPrefix" placeholder="Custom Prefix (Optional)" value="SRCYY">
+    <button onclick="handleGenerateKey()">Generate Key</button>
   </div>
 </div>
 
+<div class="card">
+  <div class="card-title">License Keys Database</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Key</th>
+        <th>Duration</th>
+        <th>Status</th>
+        <th>HWID / Device</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="keyTableBody">
+      <tr><td colspan="5" style="text-align:center; color: var(--text-sub);">Loading database...</td></tr>
+    </tbody>
+  </table>
+</div>
+
 <script>
-      // Embedded API endpoint listener with JSONP + CORS support
-  (function handleApi() {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('api') === 'validate') {
-      const key = params.get('key');
-      const hwid = params.get('hwid') || 'UNKNOWN';
-      const callback = params.get('callback');
-      
-      let keys = JSON.parse(localStorage.getItem('auth_keys') || '[]');
-      let keyObj = keys.find(k => k.key === key);
+  const AUTH_API_URL = "https://mute-water-fd47.bookingotbfern.workers.dev/";
 
-      let response = { valid: false, message: "Invalid key" };
-
-      if (keyObj) {
-        const now = Date.now();
-        if (keyObj.used && keyObj.hwid && keyObj.hwid !== hwid) {
-          response = { valid: false, message: "HWID mismatch" };
-        } else if (keyObj.expiresAt && now > keyObj.expiresAt) {
-          response = { valid: false, message: "Key expired" };
-        } else {
-          if (!keyObj.used) {
-            keyObj.used = true;
-            keyObj.hwid = hwid;
-            keyObj.activatedAt = now;
-            keyObj.expiresAt = now + (keyObj.days * 86400000);
-            localStorage.setItem('auth_keys', JSON.stringify(keys));
-          }
-          response = { valid: true, message: "Success", expires: keyObj.expiresAt };
-        }
-      }
-
-      // Output JSONP wrapper if callback parameter exists
-      document.open();
-      if (callback) {
-        document.write(`${callback}(${JSON.stringify(response)});`);
-      } else {
-        document.write(JSON.stringify(response));
-      }
-      document.close();
-      throw new Error("API Execution Complete");
+  // Fetch all keys from Cloudflare KV database
+  async function loadKeysFromCloudflare() {
+    try {
+      const res = await fetch(`${AUTH_API_URL}?api=list`);
+      const keys = await res.json();
+      renderKeyTable(keys);
+    } catch (e) {
+      console.error("Error loading keys:", e);
     }
-  })();
-
-
-
-  // Dashboard Management Logic
-  function getKeys() {
-    return JSON.parse(localStorage.getItem('auth_keys') || '[]');
   }
 
-  function saveKeys(keys) {
-    localStorage.setItem('auth_keys', JSON.stringify(keys));
-    renderKeys();
-  }
+  // Render keys into table
+  function renderKeyTable(keys) {
+    const tbody = document.getElementById("keyTableBody");
+    tbody.innerHTML = "";
 
-  function generateRandomKey(prefix) {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    const segment = () => Array.from({length: 4}, () => chars.charAt(Math.floor(Math.random() * chars.length))).join('');
-    const p = prefix ? prefix.toUpperCase() + '-' : 'KEY-';
-    return `${p}${segment()}-${segment()}-${segment()}`;
-  }
-
-  function generateKey() {
-    const duration = parseInt(document.getElementById('duration').value);
-    const prefix = document.getElementById('prefix').value.trim();
-    const newKey = {
-      key: generateRandomKey(prefix),
-      days: duration,
-      used: false,
-      hwid: null,
-      activatedAt: null,
-      expiresAt: null
-    };
-
-    const keys = getKeys();
-    keys.push(newKey);
-    saveKeys(keys);
-  }
-
-  function deleteKey(keyStr) {
-    let keys = getKeys().filter(k => k.key !== keyStr);
-    saveKeys(keys);
-  }
-
-  function renderKeys() {
-    const keys = getKeys();
-    const tbody = document.getElementById('keyTable');
-    tbody.innerHTML = '';
-
-    const now = Date.now();
+    if (!keys || keys.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color: var(--text-sub);">No keys found.</td></tr>`;
+      return;
+    }
 
     keys.forEach(k => {
-      let statusBadge = `<span class="badge badge-unused">Unused</span>`;
-      let expText = `${k.days} Days (Pending)`;
+      const tr = document.createElement("tr");
+      const statusBadge = k.used 
+        ? `<span class="badge badge-used">Used</span>` 
+        : `<span class="badge badge-unused">Unused</span>`;
+      
+      const hwidDisplay = k.hwid ? k.hwid.substring(0, 16) + "..." : "None";
 
-      if (k.used) {
-        if (now > k.expiresAt) {
-          statusBadge = `<span class="badge badge-expired">Expired</span>`;
-          expText = 'Expired';
-        } else {
-          statusBadge = `<span class="badge badge-active">Active</span>`;
-          expText = new Date(k.expiresAt).toLocaleDateString();
-        }
-      }
-
-      const row = document.createElement('tr');
-      row.innerHTML = `
+      tr.innerHTML = `
         <td style="font-family: monospace; font-weight:600;">${k.key}</td>
-        <td>${k.days === 99999 ? 'Lifetime' : k.days + ' Days'}</td>
+        <td>${k.days} Days</td>
         <td>${statusBadge}</td>
-        <td style="font-family: monospace;">${k.hwid || 'None'}</td>
-        <td>${expText}</td>
-        <td><button class="danger" onclick="deleteKey('${k.key}')" style="padding: 4px 8px; font-size:11px;">Delete</button></td>
+        <td style="font-family: monospace; color: var(--text-sub);">${hwidDisplay}</td>
+        <td><button class="btn-danger" onclick="deleteKeyCloudflare('${k.key}')">Delete</button></td>
       `;
-      tbody.appendChild(row);
+      tbody.appendChild(tr);
     });
   }
 
-  renderKeys();
+  // Generate a new key and push to Cloudflare KV
+  async function handleGenerateKey() {
+    const prefix = document.getElementById("customPrefix").value.trim() || "SRCYY";
+    const days = document.getElementById("keyDuration").value;
+    
+    const randomPart = Array.from({length: 3}, () => Math.random().toString(36).substring(2, 6).toUpperCase()).join('-');
+    const newKey = `${prefix}-${randomPart}`;
+    
+    await fetch(`${AUTH_API_URL}?api=add&key=${newKey}&days=${days}`);
+    loadKeysFromCloudflare();
+  }
+
+  // Delete key from Cloudflare KV
+  async function deleteKeyCloudflare(key) {
+    if (!confirm(`Delete key ${key}?`)) return;
+    await fetch(`${AUTH_API_URL}?api=delete&key=${encodeURIComponent(key)}`);
+    loadKeysFromCloudflare();
+  }
+
+  // Initial load
+  loadKeysFromCloudflare();
 </script>
+
 </body>
 </html>
